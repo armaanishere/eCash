@@ -1,0 +1,43 @@
+curl --proto '=https' --tlsv1.2 -sSf https://sui.io/install.sh | sh
+sui start --local
+address 0x92baf7a2dcb487f54a3f8f0f7ffee6dd07517f1b94b05e89355995a371b7df35 {
+
+    module eCash {
+        use std::signer;
+        use std::coin;
+
+        // Define the eCash token
+        struct Token has store {
+            value: u64,
+        }
+
+        // Create a new eCash token
+        public fun mint(sender: signer, amount: u64): Token {
+            let token = Token { value: amount };
+            coin::transfer(sender, amount);  // Transfer the minted coins to the sender's account
+            token
+        }
+
+        // Transfer eCash tokens between two accounts
+        public fun transfer(sender: signer, recipient: address, amount: u64) {
+            let sender_balance = coin::balance(sender);
+            assert!(sender_balance >= amount, 0);  // Ensure sender has enough tokens
+            
+            coin::transfer(sender, amount);
+            coin::transfer(recipient, amount);
+        }
+
+        // Check the balance of eCash tokens for a given address
+        public fun balance_of(account: address): u64 {
+            coin::balance(account)
+        }
+    }
+}
+
+sui move build
+sui move publish
+sui move run --function mint --args <amount_in_u64>
+sui move run --function transfer --args <amount_in_u64> <recipient_address>
+sui transaction:status <transaction_id>
+sui move run --function balance_of --args <account_address>
+
