@@ -1,0 +1,16 @@
+// Import necessary libraries from the Sui SDK
+const { Keypair, JsonRpcProvider } = require('@mysten/sui.js');
+
+// Create a new Keypair (wallet) for Sui
+const keypair = Keypair.generate();
+
+// Retrieve the public key and address (public key used as address)
+const publicKey = keypair.getPublicKey().toString();
+const address = keypair.getAddress().toString();
+
+console.log("Generated Public Key:", publicKey);
+console.log("Generated Wallet Address:", address);
+
+// Store the private key securely (in a real application, do not log this)
+const privateKey = keypair.getPrivateKey().toString();
+console.log("Private Key (KEEP THIS SAFE):", privateKey);
